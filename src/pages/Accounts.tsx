@@ -62,7 +62,7 @@ const Accounts: React.FC = () => {
         </div>
       </div>
 
-     
+      {/* Account Cards */}
       <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {accounts.map((account) => (
           <div key={account.id} className="bg-white overflow-hidden shadow rounded-lg">
@@ -92,7 +92,7 @@ const Accounts: React.FC = () => {
         ))}
       </div>
 
-      
+      {/* Recent Transactions */}
       <div className="mt-8">
         <h2 className="text-lg font-medium text-gray-900">Recent Transactions</h2>
         <div className="mt-4 bg-white shadow overflow-hidden sm:rounded-md">

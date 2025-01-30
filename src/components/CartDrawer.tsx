@@ -21,7 +21,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
   const checkout = async () => {
     await saveCart();
-    
+    // Implement checkout logic here
     toast.success('Order placed successfully!');
     dispatch({ type: 'CLEAR_CART' });
     onClose();

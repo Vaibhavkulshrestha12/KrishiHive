@@ -26,14 +26,14 @@ const FarmManagement: React.FC = () => {
       plantingDate: '2023-12-01',
       expectedHarvest: '2024-03-15',
     },
-   
+    // Add more crops as needed
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-semibold text-gray-900">Farm Management</h1>
 
-     
+      {/* Weather Information */}
       <div className="mt-8 bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">Weather Information</h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -68,7 +68,7 @@ const FarmManagement: React.FC = () => {
         </div>
       </div>
 
-      
+      {/* Crop Management */}
       <div className="mt-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">

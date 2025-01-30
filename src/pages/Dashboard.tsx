@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      
+      {/* Stats Section */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {mockData.stats.map((item) => {
           const Icon = item.icon;
@@ -136,10 +136,11 @@ const Dashboard: React.FC = () => {
         })}
       </div>
 
+      {/* Weather Section */}
       <div className="bg-white shadow rounded-lg p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Weather Forecast</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+          {/* Current Weather */}
           <div className="flex items-center space-x-6">
             <div className="flex-shrink-0">
               {getWeatherIcon(mockData.weather.current.condition)}
@@ -154,7 +155,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          
+          {/* 5-Day Forecast */}
           <div className="grid grid-cols-5 gap-2">
             {mockData.weather.forecast.map((day) => (
               <div key={day.day} className="text-center">
@@ -168,7 +169,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-     
+      {/* Featured Products */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-medium text-gray-900">Market Prices</h3>
@@ -209,7 +210,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      
+      {/* News Section */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
           <div className="flex items-center mb-4 sm:mb-0">
@@ -265,7 +266,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      
+      {/* Revenue Chart */}
       <div className="bg-white shadow rounded-lg p-6">
         <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Revenue Overview</h3>
         <div className="h-80">

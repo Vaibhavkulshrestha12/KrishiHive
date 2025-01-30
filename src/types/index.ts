@@ -54,10 +54,99 @@ export interface Account {
   ifsc_code: string;
 }
 
+export interface WeatherData {
+  current: {
+    temp: number;
+    humidity: number;
+    windSpeed: number;
+    condition: string;
+    feelsLike: number;
+    pressure: number;
+    visibility: number;
+    uvIndex: number;
+  };
+  forecast: Array<{
+    date: string;
+    high: number;
+    low: number;
+    condition: string;
+    precipitation: number;
+    humidity: number;
+  }>;
+  alerts?: Array<{
+    type: string;
+    description: string;
+    severity: 'low' | 'medium' | 'high';
+    validUntil: string;
+  }>;
+  lastUpdated: string;
+}
+
+export interface ProductDetails extends Product {
+  specifications: Array<{
+    name: string;
+    value: string;
+  }>;
+  nutritionalInfo?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+    minerals: Array<{
+      name: string;
+      value: string;
+    }>;
+  };
+  certifications: Array<{
+    name: string;
+    issuedBy: string;
+    validUntil: string;
+  }>;
+  storage: {
+    temperature: string;
+    humidity: string;
+    shelfLife: string;
+    specialInstructions?: string;
+  };
+  origin: {
+    region: string;
+    farmer: string;
+    farmingMethod: string;
+    harvestDate: string;
+  };
+  reviews: Array<{
+    userId: string;
+    rating: number;
+    comment: string;
+    date: string;
+  }>;
+  averageRating: number;
+  totalReviews: number;
+}
+
 export interface MarketPrice {
   id: string;
-  commodity: string;
-  market: string;
+  productId: string;
+  productName: string;
+  category: string;
   price: number;
-  date: string;
+  unit: string;
+  market: string;
+  timestamp: string;
+  trend: 'up' | 'down' | 'stable';
+  percentageChange: number;
+}
+
+export interface AdminUser extends User {
+  role: 'admin';
+  permissions: Array<{
+    resource: string;
+    actions: string[];
+  }>;
+  lastLogin: string;
+  activityLog: Array<{
+    action: string;
+    timestamp: string;
+    details: string;
+  }>;
 }

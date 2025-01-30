@@ -66,7 +66,7 @@ const Marketplace: React.FC = () => {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        
+        {/* Search */}
         <div className="flex-1">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -82,7 +82,7 @@ const Marketplace: React.FC = () => {
           </div>
         </div>
 
-        
+        {/* Filter */}
         <div className="flex-shrink-0">
           <div className="relative inline-block text-left w-full sm:w-48">
             <select
@@ -104,7 +104,7 @@ const Marketplace: React.FC = () => {
         </div>
       </div>
 
-      
+      {/* Product Grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
           <div key={product.id} className="bg-white overflow-hidden shadow rounded-lg">

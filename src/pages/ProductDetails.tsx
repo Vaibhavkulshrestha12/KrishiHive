@@ -10,7 +10,7 @@ const ProductDetails: React.FC = () => {
   const { dispatch } = useCart();
   const [quantity, setQuantity] = React.useState(1);
 
-  
+  // In a real app, fetch this from Firebase
   const product = {
     id: '1',
     name: 'Organic Wheat',

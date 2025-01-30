@@ -12,6 +12,7 @@ import FarmManagement from './pages/FarmManagement';
 import Storage from './pages/Storage';
 import Accounts from './pages/Accounts';
 import Auth from './pages/Auth';
+import AdminDashboard from './pages/AdminDashboard';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
@@ -35,6 +36,7 @@ function App() {
               <Route path="farm" element={<FarmManagement />} />
               <Route path="storage" element={<Storage />} />
               <Route path="accounts" element={<Accounts />} />
+              <Route path="admin" element={<AdminDashboard />} />
             </Route>
           </Routes>
           <AIChat />

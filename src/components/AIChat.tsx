@@ -11,10 +11,10 @@ const AIChat: React.FC = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    
+    // Add user message
     setMessages(prev => [...prev, { text: input, isUser: true }]);
 
-    
+    // Simulate AI response
     setTimeout(() => {
       setMessages(prev => [...prev, {
         text: "I'm a demo AI assistant. In the production version, I'll be connected to a real AI service to help you with your FPO-related queries.",
@@ -27,7 +27,7 @@ const AIChat: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      
+      {/* Chat Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -37,10 +37,10 @@ const AIChat: React.FC = () => {
         </button>
       )}
 
-      
+      {/* Chat Window */}
       {isOpen && (
         <div className="bg-white rounded-lg shadow-xl w-80 sm:w-96 flex flex-col max-h-[600px]">
-          
+          {/* Header */}
           <div className="p-4 bg-green-600 text-white rounded-t-lg flex justify-between items-center">
             <h3 className="font-medium">FPO Assistant</h3>
             <button
@@ -51,7 +51,7 @@ const AIChat: React.FC = () => {
             </button>
           </div>
 
-          
+          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-96">
             {messages.map((message, index) => (
               <div
@@ -71,7 +71,7 @@ const AIChat: React.FC = () => {
             ))}
           </div>
 
-          
+          {/* Input */}
           <div className="p-4 border-t">
             <div className="flex space-x-2">
               <input

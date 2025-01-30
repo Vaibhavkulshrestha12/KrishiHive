@@ -1,5 +1,5 @@
-import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Home, 
   ShoppingCart, 
@@ -9,25 +9,40 @@ import {
   Warehouse,
   Wallet,
   Settings,
-  LogOut
+  LogOut,
+  User
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { isUserAdmin } from '../lib/firebase';
+import { isUserAdmin, getUserProfile } from '../lib/firebase';
 
 const Layout: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const checkAdminStatus = async () => {
       if (user) {
         const adminStatus = await isUserAdmin(user.uid);
         setIsAdmin(adminStatus);
+        const profile = await getUserProfile(user.uid);
+        setUserProfile(profile);
       }
     };
     checkAdminStatus();
   }, [user]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/auth');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
@@ -76,17 +91,40 @@ const Layout: React.FC = () => {
                   })}
                 </nav>
               </div>
+              
+              {/* User Profile Section */}
               <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-                <button className="flex-shrink-0 w-full group block">
+                <div className="flex-shrink-0 w-full group block">
                   <div className="flex items-center">
-                    <div className="ml-3">
+                    <div className="inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-100">
+                      {userProfile?.photoURL ? (
+                        <img
+                          src={userProfile.photoURL}
+                          alt={userProfile.displayName}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center bg-green-100">
+                          <User className="h-5 w-5 text-green-600" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="ml-3 relative">
                       <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                        Logout
+                        {userProfile?.displayName || user?.email}
+                      </p>
+                      <p className="text-xs font-medium text-gray-500">
+                        {userProfile?.role || 'Member'}
                       </p>
                     </div>
-                    <LogOut className="ml-auto h-5 w-5 text-gray-400" />
+                    <button
+                      onClick={handleSignOut}
+                      className="ml-auto flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                      <LogOut className="h-5 w-5" />
+                    </button>
                   </div>
-                </button>
+                </div>
               </div>
             </div>
           </div>

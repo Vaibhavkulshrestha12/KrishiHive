@@ -21,7 +21,8 @@ import {
   orderBy,
   DocumentData,
   QuerySnapshot,
-  getDoc
+  getDoc,
+  updateDoc
 } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -39,7 +40,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-const createUserProfile = async (user: User, additionalData = {}) => {
+export const createUserProfile = async (user: User, additionalData = {}) => {
   if (!user) return;
 
   const userRef = doc(db, 'users', user.uid);
@@ -49,7 +50,7 @@ const createUserProfile = async (user: User, additionalData = {}) => {
     displayName: user.displayName,
     photoURL: user.photoURL,
     createdAt: new Date().toISOString(),
-    role: 'member', // Default role
+    role: 'member',
     ...additionalData
   };
 
@@ -62,19 +63,23 @@ const createUserProfile = async (user: User, additionalData = {}) => {
   }
 };
 
-export const signUp = async (email: string, password: string) => {
+export const signIn = async (email: string, password: string) => {
   try {
-    const { user } = await createUserWithEmailAndPassword(auth, email, password);
-    await createUserProfile(user);
-    return user;
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, 'users', result.user.uid), {
+      lastLogin: new Date().toISOString()
+    }, { merge: true });
+    return result.user;
   } catch (error) {
+    console.error('Sign in error:', error);
     throw error;
   }
 };
 
-export const signIn = async (email: string, password: string) => {
+export const signUp = async (email: string, password: string) => {
   try {
-    const { user } = await signInWithEmailAndPassword(auth, email, password);
+    const { user } = await createUserWithEmailAndPassword(auth, email, password);
+    await createUserProfile(user);
     return user;
   } catch (error) {
     throw error;
@@ -92,12 +97,9 @@ export const signInWithGoogle = async () => {
   }
 };
 
-export const setUpRecaptcha = (phoneNumber: string, recaptchaContainer: string) => {
-  const recaptchaVerifier = new RecaptchaVerifier(auth, recaptchaContainer, {
-    size: "invisible",
-    callback: () => {
-      // reCAPTCHA solved, allow signInWithPhoneNumber.
-    }
+export const setUpRecaptcha = (phoneNumber: string) => {
+  const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+    size: "invisible"
   });
   return signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
 };
@@ -112,25 +114,43 @@ export const verifyOTP = async (confirmationResult: any, otp: string) => {
   }
 };
 
-export const signOutUser = async () => {
+export const getUserProfile = async (userId: string) => {
   try {
-    await auth.signOut();
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    if (userDoc.exists()) {
+      return { id: userDoc.id, ...userDoc.data() };
+    }
+    return null;
   } catch (error) {
-    throw error;
+    console.error('Error fetching user profile:', error);
+    return null;
   }
 };
 
-export const getCurrentUser = (): Promise<User | null> => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (user) => {
-        unsubscribe();
-        resolve(user);
-      },
-      reject
-    );
+export const isUserAdmin = async (userId: string): Promise<boolean> => {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    return userDoc.exists() && userDoc.data()?.role === 'admin';
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+    return false;
+  }
+};
+
+export const updateProductPrice = async (productId: string, newPrice: number) => {
+  const productRef = doc(db, 'products', productId);
+  await updateDoc(productRef, {
+    price: newPrice,
+    updatedAt: new Date().toISOString()
   });
+};
+
+export const updateWeatherData = async (weatherData: any) => {
+  const weatherRef = doc(db, 'weather', 'current');
+  await setDoc(weatherRef, {
+    ...weatherData,
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
 };
 
 // Real-time market prices listener
@@ -175,27 +195,4 @@ export const subscribeToProducts = (category: string, callback: (products: Docum
     }));
     callback(products);
   });
-};
-
-// Admin functions
-export const isUserAdmin = async (userId: string): Promise<boolean> => {
-  const userRef = doc(db, 'users', userId);
-  const userSnap = await getDoc(userRef);
-  return userSnap.exists() && userSnap.data()?.role === 'admin';
-};
-
-export const updateProductPrice = async (productId: string, newPrice: number) => {
-  const productRef = doc(db, 'products', productId);
-  await setDoc(productRef, {
-    price: newPrice,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
-};
-
-export const updateWeatherData = async (weatherData: any) => {
-  const weatherRef = doc(db, 'weather', 'current');
-  await setDoc(weatherRef, {
-    ...weatherData,
-    updatedAt: new Date().toISOString()
-  }, { merge: true });
 };

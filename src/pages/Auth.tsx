@@ -35,13 +35,19 @@ const Auth: React.FC = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    if (isLoading) return;
     setIsLoading(true);
+    
     try {
       await signInWithGoogle();
       toast.success('Signed in with Google!');
       navigate('/');
     } catch (error: any) {
-      toast.error(error.message);
+      if (error.message.includes('popup')) {
+        toast.error('Please enable popups for this website and try again');
+      } else {
+        toast.error(error.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +61,7 @@ const Auth: React.FC = () => {
     setIsLoading(true);
     try {
       const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`;
-      const confirmation = await setUpRecaptcha(formattedPhone, "recaptcha-container");
+      const confirmation = await setUpRecaptcha(formattedPhone);
       setConfirmationResult(confirmation);
       setIsOtpSent(true);
       toast.success("OTP sent successfully!");
